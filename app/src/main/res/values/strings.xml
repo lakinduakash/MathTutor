@@ -1,8 +1,10 @@
 <resources>
     <string name="app_name">Math Tutor</string>
-    <string name="main_heading">Welcome</string>
+    <string name="main_heading">Lesson &amp; Questions</string>
     <string name="add">Addition</string>
     <string name="sub">Subtraction</string>
     <string name="mul">Multiplication</string>
     <string name="div">Divide</string>
+    <string name="lessons">Lessons</string>
+    <string name="ques">Questions</string>
 </resources>

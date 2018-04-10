@@ -30,12 +30,12 @@ public class MainActivity extends AppCompatActivity {
         buttonMul = findViewById(R.id.mul);
         buttonDiv = findViewById(R.id.div);
 
-        setButtonLitners();
+        setButtonListeners();
 
 
     }
 
-    private void setButtonLitners()
+    private void setButtonListeners()
     {
         buttonAdd.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -1,11 +1,13 @@
 package com.ultimatex.mathtuter;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.ultimatex.mathtuter.util.CopyAssets;
 public class MainActivity extends AppCompatActivity {
 
     public static final String EXTRA_KEY_OP="com.ultimatex.mathtutor.operator";
@@ -25,12 +27,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        CopyAssets.copyDatabase(this);
+
         buttonAdd = findViewById(R.id.add);
         buttonSub = findViewById(R.id.sub);
         buttonMul = findViewById(R.id.mul);
         buttonDiv = findViewById(R.id.div);
 
         setButtonListeners();
+
 
 
     }
@@ -86,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
 
     }
+
 
 
 

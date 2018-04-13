@@ -1,21 +1,22 @@
 package com.ultimatex.mathtuter;
 
-import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
-import com.ultimatex.mathtuter.util.CopyAssets;
+import com.ultimatex.mathtuter.util.FeedReaderDbHelper;
+import com.ultimatex.mathtuter.util.QuestionUtil;
+
 public class MainActivity extends AppCompatActivity {
 
-    public static final String EXTRA_KEY_OP="com.ultimatex.mathtutor.operator";
+    public static final String EXTRA_KEY_OP = "com.ultimatex.mathtutor.operator";
 
-    public static final String EXTRA_ADD="ADD";
-    public static final String EXTRA_SUB="SUB";
-    public static final String EXTRA_MUL="MUL";
-    public static final String EXTRA_DIV="DIV";
+    public static final String EXTRA_ADD = "ADD";
+    public static final String EXTRA_SUB = "SUB";
+    public static final String EXTRA_MUL = "MUL";
+    public static final String EXTRA_DIV = "DIV";
 
     Button buttonAdd;
     Button buttonSub;
@@ -24,10 +25,14 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        QuestionUtil.init(getApplicationContext());
+        setTheme(R.style.AppTheme);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        CopyAssets.copyDatabase(this);
+        new FeedReaderDbHelper(this).getReadableDatabase();
 
         buttonAdd = findViewById(R.id.add);
         buttonSub = findViewById(R.id.sub);
@@ -37,11 +42,9 @@ public class MainActivity extends AppCompatActivity {
         setButtonListeners();
 
 
-
     }
 
-    private void setButtonListeners()
-    {
+    private void setButtonListeners() {
         buttonAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -71,30 +74,32 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void startChooserActivity(View v)
-    {
-        String args=null;
+    private void startChooserActivity(View v) {
+        String args = null;
         int id;
 
         id = v.getId();
 
-        switch (id)
-        {
-            case R.id.add: args=EXTRA_ADD; break;
-            case R.id.sub: args=EXTRA_SUB; break;
-            case R.id.mul: args=EXTRA_MUL; break;
-            case R.id.div: args=EXTRA_DIV; break;
+        switch (id) {
+            case R.id.add:
+                args = EXTRA_ADD;
+                break;
+            case R.id.sub:
+                args = EXTRA_SUB;
+                break;
+            case R.id.mul:
+                args = EXTRA_MUL;
+                break;
+            case R.id.div:
+                args = EXTRA_DIV;
+                break;
         }
 
-        Intent intent = new Intent(this,ChooserActivity.class);
-        intent.putExtra(EXTRA_KEY_OP,args);
+        Intent intent = new Intent(this, ChooserActivity.class);
+        intent.putExtra(EXTRA_KEY_OP, args);
         startActivity(intent);
 
     }
-
-
-
-
 
 
 }

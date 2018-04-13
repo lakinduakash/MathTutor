@@ -11,7 +11,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.ultimatex.mathtuter.util.QuestionListAdapter;
+import com.ultimatex.mathtuter.util.QuestionUtil;
 import com.ultimatex.mathtuter.util.RecyclerItemClickListener;
+
+import java.util.ArrayList;
 
 public class QuestionListFragment extends Fragment {
 
@@ -19,7 +22,7 @@ public class QuestionListFragment extends Fragment {
     RecyclerView.LayoutManager rvl;
     RecyclerView.Adapter rva;
 
-    int a[] = new int[10000];
+    ArrayList<Integer> idData;
 
 
     private OnFragmentInteractionListener mListener;
@@ -32,6 +35,7 @@ public class QuestionListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        idData = QuestionUtil.getIds(MainActivity.EXTRA_ADD);
     }
 
     @Override
@@ -46,7 +50,7 @@ public class QuestionListFragment extends Fragment {
         rvl = new LinearLayoutManager(view.getContext());
         rv.setLayoutManager(rvl);
 
-        rva = new QuestionListAdapter(a);
+        rva = new QuestionListAdapter(idData);
         rv.setAdapter(rva);
 
         RecyclerView.ItemDecoration ri = new DividerItemDecoration(view.getContext(), DividerItemDecoration.VERTICAL);
@@ -55,7 +59,7 @@ public class QuestionListFragment extends Fragment {
         rv.addOnItemTouchListener(new RecyclerItemClickListener(view.getContext(), new RecyclerItemClickListener.OnClickListener() {
             @Override
             public void onClick(View view, int position) {
-                mListener.onFragmentInteraction();
+                mListener.onFragmentInteraction(position);
             }
         }));
 
@@ -81,6 +85,6 @@ public class QuestionListFragment extends Fragment {
     }
 
     public interface OnFragmentInteractionListener {
-        void onFragmentInteraction();
+        void onFragmentInteraction(int position);
     }
 }

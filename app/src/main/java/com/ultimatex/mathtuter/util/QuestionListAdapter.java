@@ -9,44 +9,45 @@ import android.widget.TextView;
 
 import com.ultimatex.mathtuter.R;
 
+import java.util.ArrayList;
+
 public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapter.ViewHolder> {
 
-    private int qId[];
+    private ArrayList<Integer> qId;
 
-    public static class ViewHolder extends RecyclerView.ViewHolder{
-        LinearLayout ll;
-        public ViewHolder(LinearLayout ll)
-        {
-            super(ll);
-            this.ll =ll;
-        }
-
-    }
-
-    public QuestionListAdapter(int qId[])
-    {
+    public QuestionListAdapter(ArrayList<Integer> qId) {
         this.qId = qId;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LinearLayout ll=(LinearLayout) LayoutInflater.from(parent.getContext()).inflate(
-                R.layout.question_list_item_view,parent,false
+        LinearLayout ll = (LinearLayout) LayoutInflater.from(parent.getContext()).inflate(
+                R.layout.question_list_item_view, parent, false
         );
         return new ViewHolder(ll);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        LinearLayout ll=holder.ll;
-        TextView tv=ll.findViewById(R.id.textView_question_list);
-        tv.setText(""+position);
+        LinearLayout ll = holder.ll;
+        TextView tv = ll.findViewById(R.id.textView_question_list);
+        tv.setText("Question " + position);
     }
 
     @Override
     public int getItemCount() {
-        return qId.length;
+        return qId.size();
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        LinearLayout ll;
+
+        public ViewHolder(LinearLayout ll) {
+            super(ll);
+            this.ll = ll;
+        }
+
     }
 
 }

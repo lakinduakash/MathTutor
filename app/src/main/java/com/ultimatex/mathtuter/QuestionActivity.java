@@ -17,7 +17,7 @@ public class QuestionActivity extends AppCompatActivity implements QuestionListF
         setContentView(R.layout.activity_question);
 
         intent = getIntent();
-        intentExtraOP = intent.getStringExtra(MainActivity.EXTRA_KEY_OP);
+        intentExtraOP = intent.getStringExtra(OperationArgs.EXTRA_KEY_OP);
 
         FragmentManager fragmentManager;
         FragmentTransaction fragmentTransaction;

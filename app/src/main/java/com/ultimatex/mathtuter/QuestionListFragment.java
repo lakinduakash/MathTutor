@@ -35,7 +35,7 @@ public class QuestionListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        idData = QuestionUtil.getIds(MainActivity.EXTRA_ADD);
+        idData = QuestionUtil.getIds(OperationArgs.EXTRA_ADD);
     }
 
     @Override

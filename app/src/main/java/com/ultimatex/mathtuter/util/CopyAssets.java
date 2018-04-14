@@ -2,20 +2,23 @@ package com.ultimatex.mathtuter.util;
 
 import android.content.Context;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 
 public class CopyAssets {
 
 
-    public static boolean copyDatabase(Context context) {
+    public static boolean copySQL(Context context) {
 
-        String assetsPath = "databases/questions.db";
+        String assetsPath = "databases/questions.sql";
         String dataPath = context.getFilesDir().getPath();
-        String fileName = "/questions.db";
+        String fileName = "/questions.sql";
 
         File file =new File(dataPath+fileName);
 
@@ -43,4 +46,28 @@ public class CopyAssets {
     return false;
 
     }
+
+    public static ArrayList<String> readSQL(Context context) {
+        String dataPath = context.getFilesDir().getPath();
+        String fileName = "/questions.sql";
+
+        return readFile(dataPath + fileName);
+
+
+    }
+
+    private static ArrayList<String> readFile(String filePath) {
+        ArrayList<String> arrayList = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+
+            String sCurrentLine;
+            while ((sCurrentLine = br.readLine()) != null) {
+                arrayList.add(sCurrentLine);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return arrayList;
+    }
+
 }

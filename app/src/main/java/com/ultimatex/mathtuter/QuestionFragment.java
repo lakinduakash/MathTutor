@@ -1,6 +1,7 @@
 package com.ultimatex.mathtuter;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -8,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.ultimatex.mathtuter.util.QuestionUtil;
+import com.ultimatex.mathtuter.util.QuestionUtilDbOperation;
 
 public class QuestionFragment extends Fragment {
 
@@ -17,6 +18,9 @@ public class QuestionFragment extends Fragment {
 
     private String op;
     private int position;
+
+    SQLiteDatabase db;
+    private DbObjectListener mListener;
 
     public QuestionFragment() {
         // Required empty public constructor
@@ -42,6 +46,11 @@ public class QuestionFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mListener = (DbObjectListener) getActivity();
+
+        if (mListener != null)
+            db = mListener.getDatabase();
         if (getArguments() != null) {
             op = getArguments().getString(ARG_OP);
             position = getArguments().getInt(ARG_POS);
@@ -53,7 +62,8 @@ public class QuestionFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_question, container, false);
-        ((TextView) view.findViewById(R.id.textView_question)).setText(QuestionUtil.getIds(op).get(position) + " " + op);
+        QuestionUtilDbOperation dbOperation = new QuestionUtilDbOperation(db, op);
+        ((TextView) view.findViewById(R.id.textView_question)).setText(dbOperation.getQuestion(position).get(7) + "whoo");
 
         return view;
     }
@@ -68,5 +78,10 @@ public class QuestionFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
     }
+
+    public interface DbObjectListener {
+        SQLiteDatabase getDatabase();
+    }
+
 
 }

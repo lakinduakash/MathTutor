@@ -5,22 +5,16 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.ultimatex.mathtuter.util.AssetManagerHelper;
+import com.ultimatex.mathtuter.util.DataDownloader;
 import com.ultimatex.mathtuter.util.QuestionUtil;
 import com.ultimatex.mathtuter.util.QuestionUtilDbOperation;
 import com.ultimatex.mathtuter.util.QuestionUtilSQLiteHelper;
-
-import java.io.BufferedInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URL;
-import java.net.URLConnection;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -61,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         DownloadFileFromURL dTak = new DownloadFileFromURL();
-        dTak.execute("http://tapidola.com/index.php");
+        dTak.execute();
 
 
         setButtonListeners();
@@ -139,7 +133,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private class DownloadFileFromURL extends AsyncTask<String, String, String> {
+    private class DownloadFileFromURL extends AsyncTask<Void, String, String> {
+
+        DataDownloader downloader;
+
 
         /**
          * Before starting background thread Show Progress Bar Dialog
@@ -153,11 +150,16 @@ public class MainActivity extends AppCompatActivity {
          * Downloading file in background thread
          */
         @Override
-        protected String doInBackground(String... f_url) {
+        protected String doInBackground(Void... voids) {
 
-            boolean updateDb = downloadTask(f_url[0]);
+            questionUtilSQLiteHelper = new QuestionUtilSQLiteHelper(getApplicationContext());
+            openedDB = questionUtilSQLiteHelper.getReadableDatabase();
+
+            downloader = new DataDownloader(MainActivity.this, MainActivity.openedDB);
+
+            boolean updateDb = downloadTask();
             dbInit(updateDb);
-
+            imageDownloadTask();
 
             return null;
         }
@@ -188,58 +190,19 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        void dbInit(boolean availNew) {
-            questionUtilSQLiteHelper = new QuestionUtilSQLiteHelper(getApplicationContext());
-            openedDB = questionUtilSQLiteHelper.getReadableDatabase();
+        private void dbInit(boolean availNew) {
 
             new QuestionUtilDbOperation(openedDB, null).insertData(availNew, getApplicationContext());
             QuestionUtil.init(getApplicationContext());
+            AssetManagerHelper.copyAssets(MainActivity.this);
         }
 
-        boolean downloadTask(String _url) {
-            int count;
-            try {
-                URL url = new URL(_url);
-                URLConnection connection = url.openConnection();
-                connection.connect();
+        boolean downloadTask() {
+            return downloader.sqlDownload();
+        }
 
-                // this will be useful so that you can show a tipical 0-100%
-                // progress bar
-                int lengthOfFile = connection.getContentLength();
-
-                // download the file
-                InputStream input = new BufferedInputStream(url.openStream(),
-                        8192);
-
-                // Output stream
-                OutputStream output = new FileOutputStream(getApplicationContext().getFilesDir().getPath() + "/dfile");
-
-                byte data[] = new byte[1024];
-
-                long total = 0;
-
-                while ((count = input.read(data)) != -1) {
-                    total += count;
-                    // publishing the progress....
-                    // After this onProgressUpdate will be called
-                    //publishProgress("" + (int) ((total * 100) / lengthOfFile));
-
-                    // writing data to file
-                    output.write(data, 0, count);
-                }
-
-                // flushing output
-                output.flush();
-
-                // closing streams
-                output.close();
-                input.close();
-                return true;
-
-            } catch (Exception e) {
-                Log.e("Error: ", e.getMessage());
-                return false;
-            }
+        void imageDownloadTask() {
+            downloader.imageDownload();
         }
 
 

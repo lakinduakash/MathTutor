@@ -4,8 +4,6 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import java.util.ArrayList;
-
 public class QuestionUtilSQLiteHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "Questions.db";
     public static final int VERSION = 1;
@@ -21,16 +19,10 @@ public class QuestionUtilSQLiteHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
 
         db.execSQL(QuestionsDbContract.AdditionEntry.CREATE_TABLE);
-        db.execSQL(QuestionsDbContract.MultiplyEntry.CREATE_TABLE);
+        db.execSQL(QuestionsDbContract.MultiplicationEntry.CREATE_TABLE);
         db.execSQL(QuestionsDbContract.DivisionEntry.CREATE_TABLE);
         db.execSQL(QuestionsDbContract.SubtractionEntry.CREATE_TABLE);
 
-        if (CopyAssets.copySQL(mContext)) {
-            ArrayList<String> arrayList = CopyAssets.readSQL(mContext);
-
-            for (String i : arrayList)
-                db.execSQL(i);
-        }
     }
 
     @Override

@@ -99,7 +99,7 @@ public class QuestionsDbContract implements BaseColumns {
 
     }
 
-    public static class MultiplyEntry implements BaseColumns {
+    public static class MultiplicationEntry implements BaseColumns {
         public static final String TABLE_NAME = "Multiplication";
 
         public static final String COLUMN_NAME_QUESTION = QuestionsDbContract.COLUMN_NAME_QUESTION;

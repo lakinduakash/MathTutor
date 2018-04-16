@@ -106,22 +106,28 @@ public class AssetManagerHelper {
     }
 
 
-    private static void copyAssets(Context context) {
+    public static void copyAssets(Context context) {
         AssetManager assetManager = context.getAssets();
         String[] files = null;
         try {
-            files = assetManager.list("");
+            files = assetManager.list("databases");
         } catch (IOException e) {
             Log.e("tag", "Failed to get asset file list.", e);
         }
-        if (files != null) for (String filename : files) {
+        if (files != null)
+            for (String filename : files) {
             InputStream in = null;
             OutputStream out = null;
             try {
-                in = assetManager.open(filename);
+                in = assetManager.open("databases/" + filename);
                 File outFile = new File(context.getFilesDir(), filename);
-                out = new FileOutputStream(outFile);
-                copyFile(in, out);
+
+                if (!outFile.exists()) {
+                    out = new FileOutputStream(outFile);
+                    copyFile(in, out);
+                } else {
+                    Log.e("fileExist", "Failed to copy asset file: " + filename + "File exist");
+                }
             } catch (IOException e) {
                 Log.e("tag", "Failed to copy asset file: " + filename, e);
             } finally {
@@ -150,6 +156,8 @@ public class AssetManagerHelper {
             out.write(buffer, 0, read);
         }
     }
+
+    //todo copy images from assets
 
 
 }

@@ -30,13 +30,16 @@ public class QuestionUtilDbOperation {
             COLUMN_NAME_OP4,
             COLUMN_NAME_TYPE,
             COLUMN_NAME_ANSWER,
-            COLUMN_NAME_SOLVED
+            COLUMN_NAME_SOLVED,
+            QuestionsDbContract._ID
     };
 
     private static final String SELECTION = QuestionsDbContract._ID + " = ?";
 
     private SQLiteDatabase database;
     private String table;
+
+    private SQLExecListener sqlExecListener;
 
     public QuestionUtilDbOperation(SQLiteDatabase db, String op) {
         database = db;
@@ -50,7 +53,7 @@ public class QuestionUtilDbOperation {
                     table = QuestionsDbContract.SubtractionEntry.TABLE_NAME;
                     break;
                 case EXTRA_MUL:
-                    table = QuestionsDbContract.MultiplyEntry.TABLE_NAME;
+                    table = QuestionsDbContract.MultiplicationEntry.TABLE_NAME;
                     break;
                 case EXTRA_DIV:
                     table = QuestionsDbContract.DivisionEntry.TABLE_NAME;
@@ -62,15 +65,15 @@ public class QuestionUtilDbOperation {
 
     public void insertData(boolean availNew, Context context) {
 
-        boolean c = CopyAssets.copySQL(context);
+        boolean c = AssetManagerHelper.copySQL(context);
         if (availNew) {
-            ArrayList<String> arrayList = CopyAssets.readSQL(context);
+            ArrayList<String> arrayList = AssetManagerHelper.readSQL(context);
 
             for (String i : arrayList)
                 database.execSQL(i);
         } else {
             if (c) {
-                ArrayList<String> arrayList = CopyAssets.readSQL(context);
+                ArrayList<String> arrayList = AssetManagerHelper.readSQL(context);
 
                 for (String i : arrayList)
                     database.execSQL(i);
@@ -92,6 +95,7 @@ public class QuestionUtilDbOperation {
             arrayList.add(cursor.getString(cursor.getColumnIndexOrThrow(COLUMNS[5])));
             arrayList.add(cursor.getString(cursor.getColumnIndexOrThrow(COLUMNS[6])));
             arrayList.add(cursor.getString(cursor.getColumnIndexOrThrow(COLUMNS[7])));
+            arrayList.add(cursor.getString(cursor.getColumnIndexOrThrow(COLUMNS[8])));
         }
         cursor.close();
         return arrayList;
@@ -102,4 +106,9 @@ public class QuestionUtilDbOperation {
         values.put(QuestionsDbContract.COLUMN_NAME_SOLVED, solved);
         return database.update(table, values, SELECTION, new String[]{Integer.toString(id)});
     }
+
+    public void setSqlExecListener(SQLExecListener sqlExecListener) {
+        this.sqlExecListener = sqlExecListener;
+    }
+
 }

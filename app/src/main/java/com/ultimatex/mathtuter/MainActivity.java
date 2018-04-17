@@ -5,11 +5,15 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.ultimatex.mathtuter.tinydb.TinyDB;
 import com.ultimatex.mathtuter.util.AssetManagerHelper;
 import com.ultimatex.mathtuter.util.DataDownloader;
 import com.ultimatex.mathtuter.util.QuestionUtil;
@@ -25,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String EXTRA_MUL = OperationArgs.EXTRA_MUL;
     public static final String EXTRA_DIV = OperationArgs.EXTRA_DIV;
 
-    public static SQLiteDatabase openedDB;
+    public SQLiteDatabase openedDB;
     TextView textViewHeading;
 
     Button buttonAdd;
@@ -61,6 +65,24 @@ public class MainActivity extends AppCompatActivity {
         setButtonListeners();
 
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_activity_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent = new Intent(this, Settings.class);
+
+        switch (item.getItemId()) {
+            case R.id.settings:
+                startActivity(intent);
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void setButtonListeners() {
@@ -155,11 +177,25 @@ public class MainActivity extends AppCompatActivity {
             questionUtilSQLiteHelper = new QuestionUtilSQLiteHelper(getApplicationContext());
             openedDB = questionUtilSQLiteHelper.getReadableDatabase();
 
-            downloader = new DataDownloader(MainActivity.this, MainActivity.openedDB);
+            downloader = new DataDownloader(MainActivity.this, MainActivity.this.openedDB);
+            QuestionUtilDbOperation operation = new QuestionUtilDbOperation(openedDB, null);
 
-            boolean updateDb = downloadTask();
-            dbInit(updateDb);
-            imageDownloadTask();
+            operation.insertData(MainActivity.this);
+            AssetManagerHelper.copyImageAssets(MainActivity.this);
+
+            TinyDB tinyDB = new TinyDB(getApplicationContext());
+            tinyDB.putBoolean(Settings.PREF_UPDATE_ON_STARTUP, tinyDB.getBoolean(Settings.PREF_UPDATE_ON_STARTUP, true));
+
+            if (tinyDB.getBoolean(Settings.PREF_UPDATE_ON_STARTUP)) {
+                boolean updated = sqlDownloadTask();
+                imageDownloadTask();
+
+                operation.insertData(updated, MainActivity.this);
+            }
+
+
+            QuestionUtil.init(MainActivity.this);
+
 
             return null;
         }
@@ -190,14 +226,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        private void dbInit(boolean availNew) {
-
-            new QuestionUtilDbOperation(openedDB, null).insertData(availNew, getApplicationContext());
-            QuestionUtil.init(getApplicationContext());
-            AssetManagerHelper.copyAssets(MainActivity.this);
-        }
-
-        boolean downloadTask() {
+        boolean sqlDownloadTask() {
             return downloader.sqlDownload();
         }
 

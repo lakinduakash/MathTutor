@@ -22,6 +22,10 @@
         <activity android:name=".ChooserActivity" />
         <activity android:name=".LessonActivity" />
         <activity android:name=".QuestionActivity" />
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/title_activity_settings" />
+        <activity android:name=".Settings"></activity>
     </application>
 
 </manifest>

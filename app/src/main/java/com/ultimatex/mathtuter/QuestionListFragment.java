@@ -19,6 +19,9 @@ import java.util.ArrayList;
 
 public class QuestionListFragment extends Fragment {
 
+    private final static String ARG_OP = "com.ultimatex.mathtutor.op785544";
+    String op;
+
     RecyclerView rv;
     RecyclerView.LayoutManager rvl;
     RecyclerView.Adapter rva;
@@ -29,6 +32,15 @@ public class QuestionListFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
+
+    public static QuestionListFragment newInstance(String param1) {
+        QuestionListFragment fragment = new QuestionListFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_OP, param1);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     public QuestionListFragment() {
         // Required empty public constructor
     }
@@ -37,7 +49,11 @@ public class QuestionListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        idData = QuestionUtil.getIds(OperationArgs.EXTRA_ADD);
+
+        if (getArguments() != null) {
+            op = getArguments().getString(ARG_OP);
+        }
+        idData = QuestionUtil.getIds(op);
     }
 
     @Override
@@ -61,7 +77,7 @@ public class QuestionListFragment extends Fragment {
         rv.addOnItemTouchListener(new RecyclerItemClickListener(view.getContext(), new RecyclerItemClickListener.OnClickListener() {
             @Override
             public void onClick(View view, int position) {
-                mListener.onFragmentInteraction(position);
+                mListener.onFragmentInteraction(idData.get(position));
             }
         }));
 
@@ -87,6 +103,6 @@ public class QuestionListFragment extends Fragment {
     }
 
     public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(int position);
+        void onFragmentInteraction(int id);
     }
 }

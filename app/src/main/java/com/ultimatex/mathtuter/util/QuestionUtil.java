@@ -17,10 +17,10 @@ public class QuestionUtil {
 
     public static final String LAST_DATE = "date";
 
-    public static ArrayList<Integer> ID_ADD;
-    public static ArrayList<Integer> ID_SUB;
-    public static ArrayList<Integer> ID_MUL;
-    public static ArrayList<Integer> ID_DIV;
+    private static ArrayList<Integer> ID_ADD;
+    private static ArrayList<Integer> ID_SUB;
+    private static ArrayList<Integer> ID_MUL;
+    private static ArrayList<Integer> ID_DIV;
 
     private static TinyDB tinyDB;
 
@@ -71,7 +71,7 @@ public class QuestionUtil {
             ID_MUL = new ArrayList<Integer>();
             ID_DIV = new ArrayList<Integer>();
 
-            for (int i = 0; i < 10; i++) {
+            for (int i = 1; i < 11; i++) {
                 ID_ADD.add(i);
                 ID_SUB.add(i);
                 ID_MUL.add(i);

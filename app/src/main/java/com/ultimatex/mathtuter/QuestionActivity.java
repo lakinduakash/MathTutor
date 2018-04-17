@@ -32,14 +32,14 @@ public class QuestionActivity extends AppCompatActivity implements QuestionListF
         fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
 
-        QuestionListFragment questionListFragment = new QuestionListFragment();
+        QuestionListFragment questionListFragment = QuestionListFragment.newInstance(intentExtraOP);
 
         fragmentTransaction.add(R.id.fragment_container_question, questionListFragment);
 
 
     }
 
-    private void addQuestionFragment(int pos) {
+    private void addQuestionFragment(int id) {
         FragmentManager fragmentManager;
         FragmentTransaction fragmentTransaction;
 
@@ -47,14 +47,14 @@ public class QuestionActivity extends AppCompatActivity implements QuestionListF
         fragmentTransaction = fragmentManager.beginTransaction();
 
 
-        QuestionFragment questionFragment = QuestionFragment.newInstance(intentExtraOP, pos);
+        QuestionFragment questionFragment = QuestionFragment.newInstance(intentExtraOP, id);
 
         fragmentTransaction.replace(R.id.fragment_container_question, questionFragment).addToBackStack(intentExtraOP).commit();
     }
 
     @Override
-    public void onFragmentInteraction(int position) {
-        addQuestionFragment(position);
+    public void onFragmentInteraction(int id) {
+        addQuestionFragment(id);
     }
 
     @Override

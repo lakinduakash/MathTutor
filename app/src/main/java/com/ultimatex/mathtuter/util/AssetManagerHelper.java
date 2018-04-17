@@ -50,6 +50,39 @@ public class AssetManagerHelper {
 
     }
 
+    public static boolean copySQL(Context context, boolean force) {
+
+        String assetsPath = "databases/questions.sql";
+        String dataPath = context.getFilesDir().getPath();
+        String fileName = "/questions.sql";
+
+        File file = new File(dataPath + fileName);
+
+        if (!file.exists() || force) {
+
+            try {
+
+                OutputStream myOutput = new FileOutputStream(dataPath + fileName);
+                byte[] buffer = new byte[1024];
+                int length;
+                InputStream myInput = context.getAssets().open(assetsPath);
+                while ((length = myInput.read(buffer)) > 0) {
+                    myOutput.write(buffer, 0, length);
+                }
+                myInput.close();
+                myOutput.flush();
+                myOutput.close();
+
+                return true;
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+        return false;
+
+    }
+
 
     public static ArrayList<String> readSQL(Context context) {
         String dataPath = context.getFilesDir().getPath();
@@ -147,6 +180,49 @@ public class AssetManagerHelper {
                 }
             }
         }
+    }
+
+    public static void copyImageAssets(Context context, boolean force) {
+        AssetManager assetManager = context.getAssets();
+        String[] files = null;
+        try {
+            files = assetManager.list("images");
+        } catch (IOException e) {
+            Log.e("tag", "Failed to get asset file list.", e);
+        }
+        if (files != null)
+            for (String filename : files) {
+                InputStream in = null;
+                OutputStream out = null;
+                try {
+                    in = assetManager.open("images/" + filename);
+                    File outFile = new File(context.getFilesDir(), filename);
+
+                    if (!outFile.exists() || force) {
+                        out = new FileOutputStream(outFile);
+                        copyFile(in, out);
+                    } else {
+                        Log.e("fileExist", "Override to copy asset file: " + filename);
+                    }
+                } catch (IOException e) {
+                    Log.e("tag", "Failed to copy asset file: " + filename, e);
+                } finally {
+                    if (in != null) {
+                        try {
+                            in.close();
+                        } catch (IOException e) {
+                            // NOOP
+                        }
+                    }
+                    if (out != null) {
+                        try {
+                            out.close();
+                        } catch (IOException e) {
+                            // NOOP
+                        }
+                    }
+                }
+            }
     }
 
     private static void copyFile(InputStream in, OutputStream out) throws IOException {

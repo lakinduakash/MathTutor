@@ -65,14 +65,13 @@ public class QuestionUtilDbOperation {
 
     public void insertData(boolean availNew, Context context) {
 
-        boolean c = AssetManagerHelper.copySQL(context);
         if (availNew) {
             ArrayList<String> arrayList = AssetManagerHelper.readSQL(context);
 
             for (String i : arrayList)
                 database.execSQL(i);
         } else {
-            if (c) {
+            if (AssetManagerHelper.copySQL(context)) {
                 ArrayList<String> arrayList = AssetManagerHelper.readSQL(context);
 
                 for (String i : arrayList)
@@ -80,7 +79,16 @@ public class QuestionUtilDbOperation {
             }
         }
 
+    }
 
+    public void insertData(Context context) {
+
+        if (AssetManagerHelper.copySQL(context)) {
+            ArrayList<String> arrayList = AssetManagerHelper.readSQL(context);
+
+            for (String i : arrayList)
+                database.execSQL(i);
+        }
     }
 
     public ArrayList<String> getQuestion(int id) {

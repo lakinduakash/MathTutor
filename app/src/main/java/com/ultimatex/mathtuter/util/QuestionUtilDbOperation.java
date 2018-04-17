@@ -91,6 +91,16 @@ public class QuestionUtilDbOperation {
         }
     }
 
+    public void insertDataFromAsset(Context context, boolean force) {
+
+        if (AssetManagerHelper.copySQL(context, force)) {
+            ArrayList<String> arrayList = AssetManagerHelper.readSQL(context);
+
+            for (String i : arrayList)
+                database.execSQL(i);
+        }
+    }
+
     public ArrayList<String> getQuestion(int id) {
         ArrayList<String> arrayList = new ArrayList<String>();
         Cursor cursor = database.query(table, COLUMNS, SELECTION, new String[]{Integer.toString(id)}, null, null, null);
@@ -107,6 +117,41 @@ public class QuestionUtilDbOperation {
         }
         cursor.close();
         return arrayList;
+    }
+
+    public int deleteAll() {
+        if (table != null) {
+            return database.delete(table, null, null);
+        }
+        return 0;
+    }
+
+    public int deleteAll(String op) {
+        String table = null;
+
+        if (op != null) {
+            switch (op) {
+                case EXTRA_ADD:
+                    table = QuestionsDbContract.AdditionEntry.TABLE_NAME;
+                    break;
+                case EXTRA_SUB:
+                    table = QuestionsDbContract.SubtractionEntry.TABLE_NAME;
+                    break;
+                case EXTRA_MUL:
+                    table = QuestionsDbContract.MultiplicationEntry.TABLE_NAME;
+                    break;
+                case EXTRA_DIV:
+                    table = QuestionsDbContract.DivisionEntry.TABLE_NAME;
+                    break;
+            }
+
+
+        }
+
+        if (table != null) {
+            return database.delete(table, null, null);
+        }
+        return 0;
     }
 
     public int updateSolved(int id, String solved) {

@@ -1,5 +1,6 @@
 package com.ultimatex.mathtuter;
 
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +10,10 @@ import android.widget.ProgressBar;
 import android.widget.Switch;
 
 import com.ultimatex.mathtuter.tinydb.TinyDB;
+import com.ultimatex.mathtuter.util.DataDownloader;
+import com.ultimatex.mathtuter.util.QuestionUtil;
+import com.ultimatex.mathtuter.util.QuestionUtilDbOperation;
+import com.ultimatex.mathtuter.util.QuestionUtilSQLiteHelper;
 
 public class Settings extends AppCompatActivity {
 
@@ -76,11 +81,15 @@ public class Settings extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... voids) {
 
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            SQLiteDatabase db = new QuestionUtilSQLiteHelper(getApplicationContext()).getReadableDatabase();
+            DataDownloader downloader = new DataDownloader(getApplicationContext(), db);
+
+            boolean updated = downloader.sqlDownload();
+            downloader.imageDownload();
+
+            new QuestionUtilDbOperation(db, null).insertData(updated, getApplicationContext());
+
+            QuestionUtil.init(getApplicationContext());
             return null;
         }
 

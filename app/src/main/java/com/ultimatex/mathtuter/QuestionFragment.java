@@ -14,10 +14,10 @@ import com.ultimatex.mathtuter.util.QuestionUtilDbOperation;
 public class QuestionFragment extends Fragment {
 
     private static final String ARG_OP = "param1";
-    private static final String ARG_POS = "param2";
+    private static final String ARG_ID = "param2";
 
     private String op;
-    private int position;
+    private int id;
 
     SQLiteDatabase db;
     private DbObjectListener mListener;
@@ -38,7 +38,7 @@ public class QuestionFragment extends Fragment {
         QuestionFragment fragment = new QuestionFragment();
         Bundle args = new Bundle();
         args.putString(ARG_OP, param1);
-        args.putInt(ARG_POS, param2);
+        args.putInt(ARG_ID, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -53,7 +53,7 @@ public class QuestionFragment extends Fragment {
             db = mListener.getDatabase();
         if (getArguments() != null) {
             op = getArguments().getString(ARG_OP);
-            position = getArguments().getInt(ARG_POS);
+            id = getArguments().getInt(ARG_ID);
         }
     }
 
@@ -63,7 +63,7 @@ public class QuestionFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_question, container, false);
         QuestionUtilDbOperation dbOperation = new QuestionUtilDbOperation(db, op);
-        ((TextView) view.findViewById(R.id.textView_question)).setText(dbOperation.getQuestion(position).get(7) + "whoo");
+        ((TextView) view.findViewById(R.id.textView_question)).setText(dbOperation.getQuestion(id).get(7) + "whoo");
 
         return view;
     }

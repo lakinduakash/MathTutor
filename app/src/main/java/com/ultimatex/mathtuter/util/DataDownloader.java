@@ -32,14 +32,16 @@ public class DataDownloader {
     }
 
     public void imageDownload() {
-        imageDownloadTask(QuestionsDbContract.AdditionEntry.TABLE_NAME);
-        imageDownloadTask(QuestionsDbContract.SubtractionEntry.TABLE_NAME);
-        imageDownloadTask(QuestionsDbContract.MultiplicationEntry.TABLE_NAME);
-        imageDownloadTask(QuestionsDbContract.DivisionEntry.TABLE_NAME);
+
+        boolean forceDownload = checkUrl(BASE_URL + "force");
+        imageDownloadTask(QuestionsDbContract.AdditionEntry.TABLE_NAME, forceDownload);
+        imageDownloadTask(QuestionsDbContract.SubtractionEntry.TABLE_NAME, forceDownload);
+        imageDownloadTask(QuestionsDbContract.MultiplicationEntry.TABLE_NAME, forceDownload);
+        imageDownloadTask(QuestionsDbContract.DivisionEntry.TABLE_NAME, forceDownload);
 
     }
 
-    private void imageDownloadTask(String tableName) {
+    private void imageDownloadTask(String tableName, boolean forceDownload) {
         Cursor cursor = getCursor(tableName);
         String filename = null;
         String url = null;
@@ -53,7 +55,7 @@ public class DataDownloader {
                 url = BASE_URL + filename;
                 File file = new File(context.getFilesDir().getPath() + "/" + filename);
 
-                if (!file.exists()) {
+                if (!file.exists() || forceDownload) {
                     if (!download(url, file)) {
                         Log.e("downloadFailed", "from " + url + " downloadFailed");
                     }
@@ -68,7 +70,6 @@ public class DataDownloader {
             URL url = new URL(s_url);
             URLConnection connection = url.openConnection();
             connection.connect();
-
             // download the file
             InputStream input = new BufferedInputStream(url.openStream(),
                     8192);
@@ -97,9 +98,24 @@ public class DataDownloader {
             output.close();
             input.close();
 
-            Log.d("DownloadSucsess", "from " + s_url);
+            Log.d("DownloadSuccess", "from " + s_url);
             return true;
 
+        } catch (Exception e) {
+            Log.e("Error: ", e.getMessage());
+            return false;
+        }
+    }
+
+    private boolean checkUrl(String s_url) {
+        int count;
+        try {
+            URL url = new URL(s_url);
+            URLConnection connection = url.openConnection();
+            connection.connect();
+            url.openStream().close();
+
+            return true;
         } catch (Exception e) {
             Log.e("Error: ", e.getMessage());
             return false;

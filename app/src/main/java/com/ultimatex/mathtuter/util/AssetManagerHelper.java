@@ -106,11 +106,11 @@ public class AssetManagerHelper {
     }
 
 
-    public static void copyAssets(Context context) {
+    public static void copyImageAssets(Context context) {
         AssetManager assetManager = context.getAssets();
         String[] files = null;
         try {
-            files = assetManager.list("databases");
+            files = assetManager.list("images");
         } catch (IOException e) {
             Log.e("tag", "Failed to get asset file list.", e);
         }
@@ -119,7 +119,7 @@ public class AssetManagerHelper {
             InputStream in = null;
             OutputStream out = null;
             try {
-                in = assetManager.open("databases/" + filename);
+                in = assetManager.open("images/" + filename);
                 File outFile = new File(context.getFilesDir(), filename);
 
                 if (!outFile.exists()) {
@@ -158,6 +158,5 @@ public class AssetManagerHelper {
     }
 
     //todo copy images from assets
-
 
 }

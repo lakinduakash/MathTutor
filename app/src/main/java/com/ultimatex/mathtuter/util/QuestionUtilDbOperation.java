@@ -23,20 +23,21 @@ import static com.ultimatex.mathtuter.util.QuestionsDbContract.COLUMN_NAME_TYPE;
 public class QuestionUtilDbOperation {
 
     private static final String[] COLUMNS = {
+            QuestionsDbContract._ID,
             COLUMN_NAME_QUESTION,
+            COLUMN_NAME_TYPE,
             COLUMN_NAME_OP1,
             COLUMN_NAME_OP2,
             COLUMN_NAME_OP3,
             COLUMN_NAME_OP4,
-            COLUMN_NAME_TYPE,
             COLUMN_NAME_ANSWER,
             COLUMN_NAME_SOLVED,
-            QuestionsDbContract._ID
     };
 
     private static final String SELECTION = QuestionsDbContract._ID + " = ?";
 
     private SQLiteDatabase database;
+
     private String table;
 
     private SQLExecListener sqlExecListener;
@@ -154,10 +155,18 @@ public class QuestionUtilDbOperation {
         return 0;
     }
 
+    public String getTable() {
+        return table;
+    }
+
     public int updateSolved(int id, String solved) {
         ContentValues values = new ContentValues();
         values.put(QuestionsDbContract.COLUMN_NAME_SOLVED, solved);
-        return database.update(table, values, SELECTION, new String[]{Integer.toString(id)});
+        if (id != 0) {
+            return database.update(table, values, SELECTION, new String[]{Integer.toString(id)});
+        } else {
+            return database.update(table, values, null, null);
+        }
     }
 
     public void setSqlExecListener(SQLExecListener sqlExecListener) {

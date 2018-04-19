@@ -12,5 +12,6 @@
         android:paddingEnd="8dp"
         android:paddingStart="8dp"
         android:paddingTop="16dp"
-        android:text="TextView" />
+        android:text="TextView"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
 </LinearLayout>

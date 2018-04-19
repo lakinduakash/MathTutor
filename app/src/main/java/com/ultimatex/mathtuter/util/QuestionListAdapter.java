@@ -30,9 +30,10 @@ public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        String title = "Question " + (position + 1);
         LinearLayout ll = holder.ll;
         TextView tv = ll.findViewById(R.id.textView_question_list);
-        tv.setText("Question " + position);
+        tv.setText(title);
     }
 
     @Override

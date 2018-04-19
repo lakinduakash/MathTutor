@@ -2,6 +2,7 @@ package com.ultimatex.mathtuter;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -24,6 +25,14 @@ public class ChooserActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         intentExtra = intent.getStringExtra(INTENT_EXTRA_KEY);
+
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            if (OperationArgs.EXTRA_ADD.equals(intentExtra)) actionBar.setTitle(R.string.add);
+            else if (OperationArgs.EXTRA_MUL.equals(intentExtra)) actionBar.setTitle(R.string.mul);
+            else if (OperationArgs.EXTRA_SUB.equals(intentExtra)) actionBar.setTitle(R.string.sub);
+            else if (OperationArgs.EXTRA_DIV.equals(intentExtra)) actionBar.setTitle(R.string.div);
+        }
 
         setButtonListeners();
 

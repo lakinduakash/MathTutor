@@ -15,9 +15,9 @@ import java.net.URLConnection;
 
 public class DataDownloader {
 
-    public static final String EXTENSION = ".png";
+    public static final String EXTENSION = ".jpg";
     public static final String SQL_FILE = "questions.sql";
-    public static final String BASE_URL = "http://192.168.1.101/";
+    public static final String BASE_URL = "http://192.168.1.101/mathtutor/";
 
     private Context context;
     private SQLiteDatabase db;
@@ -45,13 +45,17 @@ public class DataDownloader {
         Cursor cursor = getCursor(tableName);
         String filename = null;
         String url = null;
+        String extension = null;
         while (cursor.moveToNext()) {
             String id = cursor.getString(cursor.getColumnIndexOrThrow(QuestionsDbContract._ID));
             String type = cursor.getString(cursor.getColumnIndexOrThrow(QuestionsDbContract.COLUMN_NAME_TYPE));
+            extension = cursor.getString(cursor.getColumnIndexOrThrow(QuestionsDbContract.COLUMN_NAME_OP1));
 
             if (type.equals("i")) {
-
-                filename = tableName + "_" + id + EXTENSION;
+                if (!extension.equals("0"))
+                    filename = tableName + "_" + id + EXTENSION;
+                else
+                    filename = tableName + "_" + id + "." + extension;
                 url = BASE_URL + filename;
                 File file = new File(context.getFilesDir().getPath() + "/" + filename);
 
@@ -124,7 +128,7 @@ public class DataDownloader {
     }
 
     private Cursor getCursor(String table) {
-        return db.query(table, new String[]{QuestionsDbContract._ID, QuestionsDbContract.COLUMN_NAME_TYPE},
+        return db.query(table, new String[]{QuestionsDbContract._ID, QuestionsDbContract.COLUMN_NAME_TYPE, QuestionsDbContract.COLUMN_NAME_OP1},
                 null, null, null, null, null);
     }
 

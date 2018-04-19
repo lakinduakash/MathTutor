@@ -10,7 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 
 public class QuestionActivity extends AppCompatActivity implements QuestionListFragment.OnFragmentInteractionListener, QuestionFragment.DbObjectListener {
 
-    String intentExtraOP;
+    String intentExtra;
     Intent intent;
     volatile SQLiteDatabase db;
 
@@ -19,10 +19,19 @@ public class QuestionActivity extends AppCompatActivity implements QuestionListF
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_question);
 
         intent = getIntent();
-        intentExtraOP = intent.getStringExtra(OperationArgs.EXTRA_KEY_OP);
+        intentExtra = intent.getStringExtra(OperationArgs.EXTRA_KEY_OP);
+
+        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            if (OperationArgs.EXTRA_ADD.equals(intentExtra)) actionBar.setTitle(R.string.add);
+            else if (OperationArgs.EXTRA_MUL.equals(intentExtra)) actionBar.setTitle(R.string.mul);
+            else if (OperationArgs.EXTRA_SUB.equals(intentExtra)) actionBar.setTitle(R.string.sub);
+            else if (OperationArgs.EXTRA_DIV.equals(intentExtra)) actionBar.setTitle(R.string.div);
+        }
+
+        setContentView(R.layout.activity_question);
 
         new DbOpener().execute();
 
@@ -32,7 +41,7 @@ public class QuestionActivity extends AppCompatActivity implements QuestionListF
         fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
 
-        QuestionListFragment questionListFragment = QuestionListFragment.newInstance(intentExtraOP);
+        QuestionListFragment questionListFragment = QuestionListFragment.newInstance(intentExtra);
 
         fragmentTransaction.add(R.id.fragment_container_question, questionListFragment);
 
@@ -47,9 +56,9 @@ public class QuestionActivity extends AppCompatActivity implements QuestionListF
         fragmentTransaction = fragmentManager.beginTransaction();
 
 
-        QuestionFragment questionFragment = QuestionFragment.newInstance(intentExtraOP, id);
+        QuestionFragment questionFragment = QuestionFragment.newInstance(intentExtra, id);
 
-        fragmentTransaction.replace(R.id.fragment_container_question, questionFragment).addToBackStack(intentExtraOP).commit();
+        fragmentTransaction.replace(R.id.fragment_container_question, questionFragment).addToBackStack(intentExtra).commit();
     }
 
     @Override

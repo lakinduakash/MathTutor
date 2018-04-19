@@ -15,7 +15,7 @@ import java.net.URLConnection;
 
 public class DataDownloader {
 
-    public static final String EXTENSION = ".jpg";
+    public static final String EXTENSION = ".png";
     public static final String SQL_FILE = "questions.sql";
     public static final String BASE_URL = "http://192.168.1.101/";
 

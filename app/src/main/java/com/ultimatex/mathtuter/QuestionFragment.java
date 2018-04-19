@@ -19,6 +19,8 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.ultimatex.mathtuter.util.DataDownloader;
@@ -48,6 +50,13 @@ public class QuestionFragment extends Fragment {
     ArrayList<String> questionArray;
     ImageView imgView;
     TextView questionText;
+    RadioGroup mcqRadio;
+
+    RadioButton op1;
+    RadioButton op2;
+    RadioButton op3;
+    RadioButton op4;
+
     private DbObjectListener mListener;
     EditText editText;
     private SQLiteDatabase db;
@@ -98,10 +107,6 @@ public class QuestionFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_question, container, false);
 
-
-        String head = "Question " + " ";
-        ((TextView) view.findViewById(R.id.textView_question)).setText(head);
-
         createQuestion(view);
 
         return view;
@@ -123,6 +128,12 @@ public class QuestionFragment extends Fragment {
         imgView = view.findViewById(R.id.image_question);
         questionText = view.findViewById(R.id.question_text);
         editText = view.findViewById(R.id.editText_answer);
+        mcqRadio = view.findViewById(R.id.mcq);
+
+        op1 = view.findViewById(R.id.radio_op1);
+        op2 = view.findViewById(R.id.radio_op2);
+        op3 = view.findViewById(R.id.radio_op3);
+        op4 = view.findViewById(R.id.radio_op4);
 
         editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 
@@ -136,6 +147,8 @@ public class QuestionFragment extends Fragment {
             }
         });
 
+        mcqRadio.setOnCheckedChangeListener(new RadioGroupListener());
+
 
         String type = questionArray.get(COLUMN_NAME_TYPE);
 
@@ -146,19 +159,31 @@ public class QuestionFragment extends Fragment {
             String filename = dbOperation.getTable() + "_" + id + DataDownloader.EXTENSION;
             if (activity != null) {
                 Bitmap bitmap = BitmapFactory.decodeFile(activity.getApplicationContext().getFilesDir().getPath() + "/" + filename);
+                questionText.setVisibility(View.GONE);
+                mcqRadio.setVisibility(View.GONE);
                 imgView.setVisibility(View.VISIBLE);
                 imgView.setImageBitmap(bitmap);
             }
         } else if (QuestionType.TEXT.equals(type)) {
             imgView.setVisibility(View.GONE);
+            mcqRadio.setVisibility(View.GONE);
             questionText.setVisibility(View.VISIBLE);
             questionText.setText(questionArray.get(COLUMN_NAME_QUESTION));
         } else if (QuestionType.IMAGE_TEXT.equals(type)) {
             imgView.setVisibility(View.VISIBLE);
+            mcqRadio.setVisibility(View.GONE);
             questionText.setVisibility(View.VISIBLE);
             questionText.setText(questionArray.get(COLUMN_NAME_QUESTION));
         } else if (QuestionType.MCQ.equals(type)) {
-
+            mcqRadio.setVisibility(View.VISIBLE);
+            imgView.setVisibility(View.GONE);
+            editText.setVisibility(View.GONE);
+            questionText.setText(questionArray.get(COLUMN_NAME_QUESTION));
+            questionText.setVisibility(View.VISIBLE);
+            op1.setText(questionArray.get(COLUMN_NAME_OP1));
+            op2.setText(questionArray.get(COLUMN_NAME_OP2));
+            op3.setText(questionArray.get(COLUMN_NAME_OP3));
+            op4.setText(questionArray.get(COLUMN_NAME_OP4));
         }
     }
 
@@ -209,6 +234,27 @@ public class QuestionFragment extends Fragment {
     public interface DbObjectListener {
         SQLiteDatabase getDatabase();
     }
+
+    private class RadioGroupListener implements RadioGroup.OnCheckedChangeListener {
+        @Override
+        public void onCheckedChanged(RadioGroup group, int checkedId) {
+
+            switch (checkedId) {
+                case R.id.radio_op1:
+                    QuestionFragment.this.onSubmitAnswer(op1.getText().toString());
+                    break;
+                case R.id.radio_op2:
+                    QuestionFragment.this.onSubmitAnswer(op2.getText().toString());
+                    break;
+                case R.id.radio_op3:
+                    QuestionFragment.this.onSubmitAnswer(op3.getText().toString());
+                    break;
+                case R.id.radio_op4:
+                    QuestionFragment.this.onSubmitAnswer(op4.getText().toString());
+            }
+        }
+    }
+
 
 
 }

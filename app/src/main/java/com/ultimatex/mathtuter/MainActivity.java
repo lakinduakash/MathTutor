@@ -10,7 +10,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ProgressBar;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ultimatex.mathtuter.tinydb.TinyDB;
@@ -36,8 +36,9 @@ public class MainActivity extends AppCompatActivity {
     Button buttonSub;
     Button buttonMul;
     Button buttonDiv;
-    ProgressBar progressBarStart;
+
     TextView textViewLoading;
+    ImageView imageViewSplash;
     private QuestionUtilSQLiteHelper questionUtilSQLiteHelper;
 
     @Override
@@ -55,7 +56,8 @@ public class MainActivity extends AppCompatActivity {
         textViewHeading = findViewById(R.id.textView_heading);
 
         textViewLoading = findViewById(R.id.textView_loading);
-        progressBarStart = findViewById(R.id.progressBar_start);
+
+        imageViewSplash = findViewById(R.id.imageView_splash);
 
 
         DownloadFileFromURL dTak = new DownloadFileFromURL();
@@ -184,17 +186,24 @@ public class MainActivity extends AppCompatActivity {
             AssetManagerHelper.copyImageAssets(MainActivity.this);
 
             TinyDB tinyDB = new TinyDB(getApplicationContext());
+
             tinyDB.putBoolean(Settings.PREF_UPDATE_ON_STARTUP, tinyDB.getBoolean(Settings.PREF_UPDATE_ON_STARTUP, true));
 
             if (tinyDB.getBoolean(Settings.PREF_UPDATE_ON_STARTUP)) {
                 boolean updated = sqlDownloadTask();
-                imageDownloadTask();
-
                 operation.insertData(updated, MainActivity.this);
+                imageDownloadTask();
             }
 
 
-            QuestionUtil.init(MainActivity.this);
+            QuestionUtil.init(MainActivity.this, openedDB);
+            QuestionUtil.randomizeQuestionOrder();
+
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+
+            }
 
 
             return null;
@@ -214,8 +223,8 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String file_url) {
             // hide progress bar
-            progressBarStart.setVisibility(View.INVISIBLE);
             textViewLoading.setVisibility(View.INVISIBLE);
+            imageViewSplash.setVisibility(View.GONE);
 
             textViewHeading.setVisibility(View.VISIBLE);
             buttonAdd.setVisibility(View.VISIBLE);

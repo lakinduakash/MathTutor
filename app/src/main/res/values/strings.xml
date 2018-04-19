@@ -87,4 +87,8 @@
     <string name="type_answer_hint">Type answer here</string>
     <string name="image_not_found">Image not found. Update database from settings</string>
     <string name="reset_progress">Reset progress</string>
+    <string name="op1">option 1</string>
+    <string name="op2">option 2</string>
+    <string name="op3">option3</string>
+    <string name="op4">option 4</string>
 </resources>

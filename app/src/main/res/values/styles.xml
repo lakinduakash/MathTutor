@@ -8,4 +8,29 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="PrimaryButton" parent="Theme.AppCompat">
+        <item name="colorButtonNormal">@color/colorPrimary</item>
+        <item name="colorControlHighlight">@color/colorAccent</item>
+    </style>
+
+    <style name="AddButton" parent="Theme.AppCompat">
+        <item name="colorButtonNormal">@color/colorAddButtonNormal</item>
+        <item name="colorControlHighlight">@color/colorAddButtonControlHighlight</item>
+    </style>
+
+    <style name="SubButton" parent="Theme.AppCompat">
+        <item name="colorButtonNormal">@color/colorSubButtonNormal</item>
+        <item name="colorControlHighlight">@color/colorSubButtonControlHighlight</item>
+    </style>
+
+    <style name="MulButton" parent="Theme.AppCompat">
+        <item name="colorButtonNormal">@color/colorMulButtonNormal</item>
+        <item name="colorControlHighlight">@color/colorMulButtonControlHighlight</item>
+    </style>
+
+    <style name="DivButton" parent="Theme.AppCompat">
+        <item name="colorButtonNormal">@color/colorDivButtonNormal</item>
+        <item name="colorControlHighlight">@color/colorDivButtonControlHighlight</item>
+    </style>
+
 </resources>
